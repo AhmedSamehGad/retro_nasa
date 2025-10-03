@@ -4,6 +4,7 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import Game from "./pages/Game"
 import Description from "./pages/Descripton"
+import NotFound from "./components/NotFoundPage"
 
 
 function App() {
@@ -15,6 +16,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/game" element={<Game />} />
         <Route path="/description" element={<Description />} />
+
+        {/* not found page */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   )
