@@ -1,20 +1,23 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import { Route , Routes , BrowserRouter as Router  } from 'react-router-dom'
-import Game from './Pages/Game'
-import DescriptionCarousel from './Pages/Description'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import HomePage from "./pages/HomePage"
+import Login from "./pages/Login"
+import Register from "./pages/Register"
+import Game from "./pages/Game"
+import Description from "./pages/Descripton"
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
-return (
-  <Router>
-    <Routes>
-      <Route path="/game" element={<Game />} />
-      <Route path="/description" element={<DescriptionCarousel />} />
-    </Routes>
-  </Router>
-)
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/game" element={<Game />} />
+        <Route path="/description" element={<Description />} />
+      </Routes>
+    </Router>
+  )
 }
 
 export default App
