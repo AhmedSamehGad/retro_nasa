@@ -5,6 +5,8 @@ import Login from "./Pages/Login"
 import Register from "./Pages/Register"
 import Game from "./Pages/Game"
 import Description from "./Pages/Descripton"
+import Compare from "./Pages/Compare"
+import Details from "./Pages/Details"
 
 
 function App() {
@@ -15,10 +17,13 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="details" element={<Details />} />
         </Route>
 
         <Route path="/game" element={<Game />} />
         <Route path="/description" element={<Description />} />
+        <Route path="compare" element={<Compare />} />
+        
       </Routes>
     </Router>
   )

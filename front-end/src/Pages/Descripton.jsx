@@ -1,58 +1,15 @@
 import { useState, useEffect, useRef } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { OrbitControls, Stars, PointerLockControls } from "@react-three/drei"
+import { OrbitControls, Stars } from "@react-three/drei"
 import * as THREE from "three"
-import { FaGamepad, FaCamera, FaFacebook, FaTwitter, FaInstagram, FaInfoCircle } from "react-icons/fa"
+import FreeControls from "../components/FreeControls"
+import { FaGamepad, FaCamera, FaFacebook, FaTwitter, FaInstagram, FaInfoCircle, FaBalanceScale } from "react-icons/fa"
 import { FaSave } from "react-icons/fa"
 import "../css/Description.css"
 import Model from "../components/model"
 
-// Free movement controls with collision detection
-function FreeControls({ objects }) {
-  const { camera } = useThree()
-  const keys = useRef({})
-  const velocity = useRef(new THREE.Vector3())
-  const raycaster = useRef(new THREE.Raycaster())
-
-  useEffect(() => {
-    const handleKeyDown = (e) => (keys.current[e.code] = true)
-    const handleKeyUp = (e) => (keys.current[e.code] = false)
-
-    window.addEventListener("keydown", handleKeyDown)
-    window.addEventListener("keyup", handleKeyUp)
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-      window.removeEventListener("keyup", handleKeyUp)
-    }
-  }, [])
-
-  useFrame(() => {
-    const speed = 0.1
-    velocity.current.set(0, 0, 0)
-
-    if (keys.current["KeyW"]) velocity.current.z -= speed
-    if (keys.current["KeyS"]) velocity.current.z += speed
-    if (keys.current["KeyA"]) velocity.current.x -= speed
-    if (keys.current["KeyD"]) velocity.current.x += speed
-    if (keys.current["Space"]) velocity.current.y += speed
-    if (keys.current["ShiftLeft"]) velocity.current.y -= speed
-
-    const move = velocity.current.clone().applyEuler(camera.rotation)
-
-    if (move.length() > 0) {
-      raycaster.current.set(camera.position, move.clone().normalize())
-      const intersects = raycaster.current.intersectObjects(objects, true)
-
-      if (intersects.length === 0 || intersects[0].distance > 1.5) {
-        camera.position.add(move)
-      }
-    }
-  })
-
-  return <PointerLockControls />
-}
+// FreeControls is provided by shared component
 
 // Scene component with toggle controls
 function Scene({ children, ambient = 2, directional = 1, freeControl }) {
@@ -109,6 +66,7 @@ function DescriptionCarousel() {
   const location = useLocation();
   const navigate = useNavigate();
   const carouselRef = useRef(null);
+  const [compareOpen, setCompareOpen] = useState(false);
   const canvasRefs = [useRef(null), useRef(null), useRef(null)];
 
   // Map planet names to slide indices
@@ -117,6 +75,8 @@ function DescriptionCarousel() {
     Pluto: 1,
     Earth: 2,
   };
+
+  const planets = ["Vesta", "Pluto", "Earth"];
 
   // Responsive model scales
   const vestaScale = useResponsiveScale(0.001, 0.0007, 0.0005);
@@ -293,6 +253,7 @@ function DescriptionCarousel() {
           >
             <FaGamepad size={24} />
           </button>
+
           <button
             className={`icon-btn${animating ? ' animating' : ''}`}
             onClick={handlePlanetShot}
@@ -300,13 +261,60 @@ function DescriptionCarousel() {
           >
             <FaCamera size={22} />
           </button>
-          <button
-            className={`icon-btn`}
-            onClick={() => navigate('/details')}
-            title="Details"
-          >
-            <FaInfoCircle size={20} />
-          </button>
+
+          {(() => {
+            const idx = getSlideFromQuery();
+            const currentPlanet = planets[idx] || planets[0];
+            return (
+              <button
+                className={`icon-btn`}
+                onClick={() => navigate(`/details?planet=${encodeURIComponent(currentPlanet)}`)}
+                title="Details"
+              >
+                <FaInfoCircle size={20} />
+              </button>
+            )
+          })()}
+
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <button
+              className={`icon-btn`}
+              onClick={() => setCompareOpen(open => !open)}
+              title="Compare"
+              aria-expanded={compareOpen}
+            >
+              <FaBalanceScale size={20} />
+            </button>
+
+            {compareOpen && (() => {
+              const idx = getSlideFromQuery();
+              const currentPlanet = planets[idx] || planets[0];
+              const options = planets.filter(p => p !== currentPlanet);
+              return (
+                <ul className="compare-dropdown" style={{
+                  position: 'absolute',
+                  right: 0,
+                  marginTop: 8,
+                  background: 'rgba(0,0,0,0.85)',
+                  color: '#fff',
+                  borderRadius: 8,
+                  padding: '6px 8px',
+                  listStyle: 'none',
+                  minWidth: 140,
+                  zIndex: 60
+                }}>
+                  {options.map((p) => (
+                    <li key={p} style={{ padding: '6px 8px', cursor: 'pointer' }} onClick={() => {
+                      setCompareOpen(false);
+                      const base = encodeURIComponent(currentPlanet);
+                      const compare = encodeURIComponent(p);
+                      navigate(`/compare?base=${base}&compare=${compare}`);
+                    }}>{p}</li>
+                  ))}
+                </ul>
+              )
+            })()}
+          </div>
         </div>
 
         {/* Planet photo banner */}
