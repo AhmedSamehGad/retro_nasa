@@ -14,8 +14,8 @@ const contentVariant =  {
 
 const childVariants = { 
   initial: { opacity: 0, y: "100%", scale:.5 }, 
-  animate: { opacity: 1, y: 0, transition: { duration: 1 }, scale:1, 
-  transition:{type:"spring", stiffness:90,damping: 20} },
+  animate: { opacity: 1, y: 0, scale:1, 
+  transition:{duration: 1, type:"spring", stiffness:90,damping: 20} },
   
 }; 
 
