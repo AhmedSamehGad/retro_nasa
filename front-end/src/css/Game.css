@@ -12,28 +12,15 @@ canvas {
   display: block;
 }
 
-/* Ensure the WebGL canvas and in-scene HTML are underneath the UI overlays */
-.game-root canvas {
-  position: relative;
-  z-index: 1;
-}
-
-.space-screen {
-  position: relative; /* establish stacking context for screen contents */
-  z-index: 2; /* keep the in-world screen above the canvas but under UI (99999) */
-}
-
 /* top-right UI */
 .ui-top-right {
-  /* Make the top-right UI fixed to the viewport and ensure it sits above the WebGL canvas/Html overlays */
-  position: fixed;
+  position: absolute;
   top: 12px;
   right: 12px;
-  z-index: 99999;
+  z-index: 40;
   display: flex;
   gap: 10px;
   align-items: center;
-  pointer-events: none; /* let child buttons opt-in */
 }
 
 .ui-btn {
@@ -48,18 +35,16 @@ canvas {
 
 /* bottom-left legend */
 .ui-bottom-left {
-  position: fixed;
+  position: absolute;
   bottom: 12px;
   left: 12px;
-  z-index: 99999;
-  pointer-events: none;
+  z-index: 30;
 }
 .panel {
   background: rgba(0,0,0,0.55);
   padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.06);
-  pointer-events: auto; /* panels should receive interactions */
 }
 
 /* hint text when locked */
@@ -67,32 +52,6 @@ canvas {
   margin-right: 12px;
   color: #d8e6ff;
   font-size: 0.95rem;
-  z-index: 99999;
-  pointer-events: none; /* hints should not block clicks by default */
-}
-
-/* Centered UI helper - used for prompts like 'Press E to sit' */
-.ui-center {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 99999;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Utility: allow explicit interactive children to opt in to pointer events */
-.ui-top-right .ui-btn,
-.ui-bottom-left .ui-btn,
-.ui-center .ui-btn,
-.panel,
-.ui-top-right .ui-row,
-.ui-center .hint[style],
-.ui-bottom-left [style] {
-  pointer-events: auto;
 }
 
 /* small responsive adjustments */

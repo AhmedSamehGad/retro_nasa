@@ -5,7 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { PointerLockControls, Stars, Html } from "@react-three/drei"
 import * as THREE from "three"
 import "../css/Game.css"
-import "../css/Screen.css";
+import "../css/screen.css";
 import Model from "../components/model"
 
 function PlayerController({
@@ -715,7 +715,7 @@ export default function Game() {
             </span>
           </div>
           {/* Bottom center message */}
-          <div style={{position:'fixed',left:'50%',bottom:32,transform:'translateX(-50%)',zIndex:99999,background:'#222d',color:'#fff',borderRadius:8,padding:'10px 18px',fontSize:17,boxShadow:'0 2px 8px #0005',textAlign:'center'}}>
+          <div style={{position:'fixed',left:'50%',bottom:32,transform:'translateX(-50%)',zIndex:1000,background:'#222d',color:'#fff',borderRadius:8,padding:'10px 18px',fontSize:17,boxShadow:'0 2px 8px #0005',textAlign:'center'}}>
             Press <b>E</b> to interact
           </div>
         </>
@@ -726,7 +726,7 @@ export default function Game() {
           <div className="ui-center">
             <span className="hint">Press N to stand • Press F to focus</span>
           </div>
-          <div style={{position:'fixed',left:20,bottom:20,zIndex:99999,background:'#222d',color:'#fff',borderRadius:8,padding:'10px 18px',fontSize:17,boxShadow:'0 2px 8px #0005'}}>
+          <div style={{position:'fixed',left:20,bottom:20,zIndex:1000,background:'#222d',color:'#fff',borderRadius:8,padding:'10px 18px',fontSize:17,boxShadow:'0 2px 8px #0005'}}>
             {zoomed ? (
               <>
                 <div>Press <b>F</b> to exit focus</div>
