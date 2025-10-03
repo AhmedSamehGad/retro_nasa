@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { OrbitControls, Stars, PointerLockControls } from "@react-three/drei"
 import * as THREE from "three"
-import { FaGamepad, FaCamera, FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa"
+import { FaGamepad, FaCamera, FaFacebook, FaTwitter, FaInstagram, FaInfoCircle } from "react-icons/fa"
 import { FaSave } from "react-icons/fa"
 import "../css/Description.css"
 import Model from "../components/model"
@@ -71,18 +71,6 @@ function Scene({ children, ambient = 2, directional = 1, freeControl }) {
   )
 }
 
-function DescriptionBox({ text }) {
-  const [expanded, setExpanded] = useState(false)
-  return (
-    <div
-      className={`object-description ${expanded ? "expanded" : ""}`}
-      onClick={() => setExpanded(!expanded)}
-    >
-      {text}
-    </div>
-  )
-}
-
 function ImageBox({ src, caption }) {
   const [expanded, setExpanded] = useState(false)
   return (
@@ -119,6 +107,7 @@ function DescriptionCarousel() {
   const [showPlanetBanner, setShowPlanetBanner] = useState(false)
   const [animating, setAnimating] = useState(false)
   const location = useLocation();
+  const navigate = useNavigate();
   const carouselRef = useRef(null);
   const canvasRefs = [useRef(null), useRef(null), useRef(null)];
 
@@ -311,6 +300,13 @@ function DescriptionCarousel() {
           >
             <FaCamera size={22} />
           </button>
+          <button
+            className={`icon-btn`}
+            onClick={() => navigate('/details')}
+            title="Details"
+          >
+            <FaInfoCircle size={20} />
+          </button>
         </div>
 
         {/* Planet photo banner */}
@@ -346,7 +342,6 @@ function DescriptionCarousel() {
               <Scene ambient={3} directional={0.8} freeControl={freeControl}>
                 <Model path="/models/vesta.glb" scale={vestaScale} />
               </Scene>
-              <DescriptionBox text="Vesta is one of the largest asteroids in the asteroid belt." />
               <ImageBox src="/images/vesta.jpg" caption="Vesta Overview" />
             </div>
           </div>
@@ -367,7 +362,6 @@ function DescriptionCarousel() {
               <Scene ambient={2.5} directional={0.5} freeControl={freeControl}>
                 <Model path="/models/pluto.glb" scale={plutoScale} />
               </Scene>
-              <DescriptionBox text="Pluto is a dwarf planet located in the Kuiper Belt." />
               <ImageBox src="/images/pluto.jpg" caption="Pluto Overview" />
             </div>
           </div>
@@ -388,7 +382,6 @@ function DescriptionCarousel() {
               <Scene ambient={1} directional={1.2} freeControl={freeControl}>
                 <Model path="/models/earth.glb" scale={earthScale} />
               </Scene>
-              <DescriptionBox text="Earth is the only known planet that supports life." />
               <ImageBox src="/images/earth.jpg" caption="Earth Overview" />
             </div>
           </div>
