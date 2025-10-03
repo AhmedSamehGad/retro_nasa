@@ -1,22 +1,19 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import HomePage from "./pages/HomePage"
+import Login from "./pages/Login"
+import Register from "./pages/Register"
+import Game from "./pages/Game"
+import Description from "./pages/Descripton"
+import NotFound from "./components/NotFoundPage"
 
-import Layout from "./components/Layouts/Layout"
-import HomePage from "./Pages/HomePage"
-import Login from "./Pages/Login"
-import Register from "./Pages/Register"
-import Game from "./Pages/Game"
-import Description from "./Pages/Descripton"
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-        </Route>
-
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/game" element={<Game />} />
         <Route path="/description" element={<Description />} />
 
