@@ -47,11 +47,18 @@ export default function ComparePage() {
   const planets = useMemo(() => ({
     Vesta: { path: '/models/vesta.glb', scale: useResponsiveScale(0.001, 0.0007, 0.0005) },
     Pluto: { path: '/models/pluto.glb', scale: useResponsiveScale(0.005, 0.0035, 0.0025) },
+    Mars: { path: '/models/mars.glb', scale: useResponsiveScale(0.004, 0.0025, 0.0018) },
+    Ceres: { path: '/models/ceres.glb', scale: useResponsiveScale(0.005, 0.005, 0.003) },
+    Jupiter: { path: '/models/jupiter.glb', scale: useResponsiveScale(0.007, 0.0044, 0.0029) },
+    Haumea: { path: '/models/haumea.glb', scale: useResponsiveScale(0.0035, 0.0022, 0.0016) },
+    Eris: { path: '/models/eris.glb', scale: useResponsiveScale(0.0045, 0.003, 0.0022) },
+    Neptune: { path: '/models/neptune.glb', scale: useResponsiveScale(0.006, 0.0044, 0.003) },
     Earth: { path: '/models/earth.glb', scale: useResponsiveScale(2, 1.3, 0.9) },
   }), [])
 
-  const left = planets[compare] || planets['Pluto']
-  const right = planets[base] || planets['Vesta']
+  // left = base (the planet currently shown in the carousel), right = compare (the planet user selected)
+  const left = planets[base] || planets['Vesta']
+  const right = planets[compare] || planets['Pluto']
 
   // metadata for quick info boxes
   const planetDetails = useMemo(() => ({
@@ -84,8 +91,8 @@ export default function ComparePage() {
     }
   }), [])
 
-  const leftMeta = planetDetails[compare] || {}
-  const rightMeta = planetDetails[base] || {}
+  const leftMeta = planetDetails[base] || {}
+  const rightMeta = planetDetails[compare] || {}
 
   const [showInfoLeft, setShowInfoLeft] = useState(false)
   const [showInfoRight, setShowInfoRight] = useState(false)
@@ -97,14 +104,14 @@ export default function ComparePage() {
           <div style={{ padding: 8, color: '#fff', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', gap: 8, position: 'relative' }}>
             <button
               className="icon-btn"
-              onClick={() => navigate(`/description?planet=${encodeURIComponent(compare)}`)}
-              title={`Back to ${compare} description`}
+              onClick={() => navigate(`/description?planet=${encodeURIComponent(base)}`)}
+              title={`Back to ${base} description`}
               style={{ background: 'transparent', border: 'none', color: '#fff', padding: 4, cursor: 'pointer' }}
             >
               <FaArrowLeft />
             </button>
             <button onClick={() => setShowInfoLeft(s => !s)} style={{ fontWeight: 600, background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer' }} aria-expanded={showInfoLeft}>
-              {compare}
+              {base}
             </button>
 
             <AnimatePresence>
@@ -138,7 +145,7 @@ export default function ComparePage() {
           </button>
           <button
             className="icon-btn"
-            onClick={() => navigate(`/details?planet=${encodeURIComponent(compare)}`)}
+            onClick={() => navigate(`/details?planet=${encodeURIComponent(base)}`)}
             title="Details"
             style={{ position: 'absolute', top: 8, right: 48, zIndex: 70 }}
           >
@@ -152,7 +159,7 @@ export default function ComparePage() {
         <div style={{ flex: 1, borderRadius: 12, overflow: 'hidden', background: '#000', position: 'relative' }}>
           <div style={{ padding: 8, color: '#fff', background: 'rgba(0,0,0,0.6)', position: 'relative' }}>
             <button onClick={() => setShowInfoRight(s => !s)} style={{ fontWeight: 600, background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer' }} aria-expanded={showInfoRight}>
-              {base}
+              {compare}
             </button>
 
             <AnimatePresence>
@@ -186,7 +193,7 @@ export default function ComparePage() {
           </button>
           <button
             className="icon-btn"
-            onClick={() => navigate(`/details?planet=${encodeURIComponent(base)}`)}
+            onClick={() => navigate(`/details?planet=${encodeURIComponent(compare)}`)}
             title="Details"
             style={{ position: 'absolute', top: 8, right: 48, zIndex: 70 }}
           >
