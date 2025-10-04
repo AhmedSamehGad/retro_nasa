@@ -17,7 +17,7 @@ dotenv.config()
 const allowedOrigins = process.env.ORIGINS.split(',') || []
 app.use(cors({
     origin: (origin, callBack) => {
-        if(!origin || !allowedOrigins.includes(origin)) return callBack(null, true)
+        if(!origin || allowedOrigins.includes(origin)) return callBack(null, true)
         else return callBack(new Error("Not allowed by CORS"))
     },
     methods:['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],

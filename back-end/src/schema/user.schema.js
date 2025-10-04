@@ -4,10 +4,15 @@ const UserSchema =  mongoose.Schema({
     // info
     firstName:String,
     lastName:String,
+    type:String,
+    
+    address:String,
 
     // security
     email:{type:String, unique:true},
+    phoneNumber:String,
     password:String,
+
 
     tokens:{type:[String], default:[]},
 
