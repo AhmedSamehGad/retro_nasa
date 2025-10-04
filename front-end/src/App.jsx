@@ -1,13 +1,13 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Layout from "./components/Layouts/Layout"
-import HomePage from "./Pages/HomePage"
-import Login from "./Pages/Login"
-import Register from "./Pages/Register"
-import Game from "./Pages/Game"
-import Description from "./Pages/Descripton"
-import Compare from "./Pages/Compare"
-import Details from "./Pages/Details"
-import NotFound from "./components/NotFoundPage"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layouts/Layout";
+import HomePage from "./Pages/HomePage";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import Game from "./Pages/Game";
+import Description from "./Pages/Descripton";
+import Compare from "./Pages/Compare";
+import Details from "./Pages/Details";
+import NotFound from "./components/NotFoundPage";
 
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
