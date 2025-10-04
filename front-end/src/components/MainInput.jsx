@@ -1,4 +1,7 @@
 import React from 'react'
+import { useState } from 'react'
+
+
 
 const Input = () => {
   return (
@@ -37,9 +40,13 @@ const Input = () => {
         >
           Register
         </button>
+
+        
       </form>
     </div>
   )
 }
 
 export default Input
+
+

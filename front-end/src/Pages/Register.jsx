@@ -20,6 +20,8 @@ import "../css/Register.css";
       <div className="relative z-10 text-white text-3xl flex justify-center items-center min-h-screen">
         <Input /> {/* ✅ الكومبوننت شغال هنا */}
       </div>
+
+     
     </div>
   );
 }
