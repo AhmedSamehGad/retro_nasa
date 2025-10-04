@@ -86,6 +86,90 @@ function DescriptionCarousel() {
 
   const planets = ["Vesta", "Pluto", "Mars", "Ceres", "Jupiter", "Haumea", "Eris", "Neptune"];
 
+  // --- API fetch for planets media ---
+  const [apiPlanetsMap, setApiPlanetsMap] = useState({});
+  const [apiLoading, setApiLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    setApiLoading(true);
+    fetch("http://localhost:7170/api/getplanets")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (!mounted) return;
+        const list = data?.allPlanets || data?.allplanets || data || [];
+        const map = {};
+        if (Array.isArray(list)) {
+          for (const p of list) {
+            if (p && p.name) map[p.name] = p;
+          }
+        }
+        setApiPlanetsMap(map);
+        setApiError(null);
+      })
+      .catch((err) => {
+        if (!mounted) return;
+        console.warn('Failed to fetch planets:', err);
+        setApiError(err.message || String(err));
+        setApiPlanetsMap({});
+      })
+      .finally(() => {
+        if (!mounted) return;
+        setApiLoading(false);
+      });
+    return () => { mounted = false };
+  }, []);
+
+  function getPlanetData(name) {
+    if (!name) return null;
+    const direct = apiPlanetsMap[name];
+    if (direct) return direct;
+    // case-insensitive fallback
+    const lower = name.toLowerCase();
+    return Object.values(apiPlanetsMap).find(p => p && p.name && p.name.toLowerCase() === lower) || null;
+  }
+
+  function getImageFor(planetName, localFallback) {
+    const p = getPlanetData(planetName);
+    if (p && p.media) return p.media.video_url || p.media.image_url || p.media.url || localFallback;
+    return localFallback;
+  }
+
+  function MediaList({ planetName }) {
+    const p = getPlanetData(planetName);
+    if (apiLoading) return <div className="mt-2 text-sm text-gray-300">Loading media...</div>;
+    if (apiError) return <div className="mt-2 text-sm text-red-400">Failed to load media: {apiError}</div>;
+    if (!p || !p.media) return <div className="mt-2 text-sm text-gray-400">No media metadata available.</div>;
+    const entries = Object.entries(p.media || {});
+    if (entries.length === 0) return <div className="mt-2 text-sm text-gray-400">No media metadata available.</div>;
+    return (
+      <div className="mt-3 bg-gray-900 text-gray-100 p-3 rounded grid gap-2">
+        {entries.map(([k, v]) => (
+          <div key={k} className="flex flex-col sm:flex-row sm:items-start gap-2">
+            <div className="font-semibold text-sm text-gray-300 w-32">{k}</div>
+            <div className="text-sm break-words">
+              {typeof v === 'string' && v.startsWith('http') ? (
+                <a href={v} target="_blank" rel="noreferrer" className="text-blue-300 underline">{v}</a>
+              ) : typeof v === 'string' ? (
+                <span>{v}</span>
+              ) : Array.isArray(v) ? (
+                <div className="flex flex-col gap-1">{v.map((it, i) => <div key={i} className="text-sm">• {typeof it === 'string' ? it : JSON.stringify(it)}</div>)}</div>
+              ) : typeof v === 'object' && v !== null ? (
+                <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(v, null, 2)}</pre>
+              ) : (
+                <span>{String(v)}</span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   // Responsive model scales
   const vestaScale = useResponsiveScale(0.001, 0.0007, 0.0005);
   const plutoScale = useResponsiveScale(0.005, 0.0035, 0.0025);
@@ -406,7 +490,10 @@ function DescriptionCarousel() {
               <Scene ambient={3} directional={0.8} freeControl={freeControl}>
                 <Model path="/models/vesta.glb" scale={vestaScale} />
               </Scene>
-              <ImageBox src="/images/vesta.jpg" caption="Vesta Overview" />
+              <div className="mt-3">
+                <ImageBox src={getImageFor('Vesta', '/images/vesta.jpg')} caption="Vesta Overview" />
+                <MediaList planetName="Vesta" />
+              </div>
             </div>
           </div>
 
@@ -426,7 +513,10 @@ function DescriptionCarousel() {
               <Scene ambient={2.5} directional={0.5} freeControl={freeControl}>
                 <Model path="/models/pluto.glb" scale={plutoScale} />
               </Scene>
-              <ImageBox src="/images/pluto.jpg" caption="Pluto Overview" />
+              <div className="mt-3">
+                <ImageBox src={getImageFor('Pluto', '/images/pluto.jpg')} caption="Pluto Overview" />
+                <MediaList planetName="Pluto" />
+              </div>
             </div>
           </div>
 
@@ -446,7 +536,10 @@ function DescriptionCarousel() {
               <Scene ambient={2} directional={0.9} freeControl={freeControl}>
                 <Model path="/models/mars.glb" scale={marsScale} />
               </Scene>
-              <ImageBox src="/images/mars.jpg" caption="Mars Overview" />
+              <div className="mt-3">
+                <ImageBox src={getImageFor('Mars', '/images/mars.jpg')} caption="Mars Overview" />
+                <MediaList planetName="Mars" />
+              </div>
             </div>
           </div>
 
@@ -466,7 +559,10 @@ function DescriptionCarousel() {
               <Scene ambient={1.8} directional={0.7} freeControl={freeControl}>
                 <Model path="/models/ceres.glb" scale={ceresScale} />
               </Scene>
-              <ImageBox src="/images/ceres.jpg" caption="Ceres Overview" />
+              <div className="mt-3">
+                <ImageBox src={getImageFor('Ceres', '/images/ceres.jpg')} caption="Ceres Overview" />
+                <MediaList planetName="Ceres" />
+              </div>
             </div>
           </div>
 
@@ -485,7 +581,10 @@ function DescriptionCarousel() {
               <Scene ambient={0.4} directional={1.1} freeControl={freeControl}>
                 <Model path="/models/jupiter.glb" scale={jupiterScale} />
               </Scene>
-              <ImageBox src="/images/jupiter.jpg" caption="Jupiter Overview" />
+              <div className="mt-3">
+                <ImageBox src={getImageFor('Jupiter', '/images/jupiter.jpg')} caption="Jupiter Overview" />
+                <MediaList planetName="Jupiter" />
+              </div>
             </div>
           </div>
 
@@ -504,7 +603,10 @@ function DescriptionCarousel() {
               <Scene ambient={1.6} directional={0.7} freeControl={freeControl}>
                 <Model path="/models/haumea.glb" scale={haumeaScale} />
               </Scene>
-              <ImageBox src="/images/haumea.jpg" caption="Haumea Overview" />
+              <div className="mt-3">
+                <ImageBox src={getImageFor('Haumea', '/images/haumea.jpg')} caption="Haumea Overview" />
+                <MediaList planetName="Haumea" />
+              </div>
             </div>
           </div>
 
@@ -523,7 +625,10 @@ function DescriptionCarousel() {
               <Scene ambient={1.9} directional={0.8} freeControl={freeControl}>
                 <Model path="/models/eris.glb" scale={erisScale} />
               </Scene>
-              <ImageBox src="/images/eris.jpg" caption="Eris Overview" />
+              <div className="mt-3">
+                <ImageBox src={getImageFor('Eris', '/images/eris.jpg')} caption="Eris Overview" />
+                <MediaList planetName="Eris" />
+              </div>
             </div>
           </div>
 
@@ -542,7 +647,10 @@ function DescriptionCarousel() {
               <Scene ambient={0.5} directional={0.9} freeControl={freeControl}>
                 <Model path="/models/neptune.glb" scale={neptuneScale} />
               </Scene>
-              <ImageBox src="/images/neptune.jpg" caption="Neptune Overview" />
+              <div className="mt-3">
+                <ImageBox src={getImageFor('Neptune', '/images/neptune.jpg')} caption="Neptune Overview" />
+                <MediaList planetName="Neptune" />
+              </div>
             </div>
           </div>
 
