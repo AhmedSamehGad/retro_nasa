@@ -11,6 +11,10 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Your Profile", path: "/profile" },
+<<<<<<< HEAD
+=======
+    { name: "Resources", path: "/resources" },
+>>>>>>> 956017453293ae14d0fc869f508b2ed9623cecc6
     { name: "How It All Began", path: "/about" },
   ]
 
