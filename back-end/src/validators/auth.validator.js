@@ -11,6 +11,17 @@ const registerSchecma = {
         .notEmpty().withMessage("lastName is rquired")
         .isString().withMessage("lastName must be string")
         .isLength({min:2}).withMessage("lastName mustn't be at least 2 characters"),
+
+    address: body("address")
+        .notEmpty().withMessage("address is rquired")
+        .isString().withMessage("address must be string")
+        .isLength({min:2}).withMessage("address mustn't be at least 2 characters"),
+
+    phoneNumber: body("phoneNumber")
+        .notEmpty().withMessage("phoneNumber is rquired")
+        .isString().withMessage("phoneNumber must be string")
+        .isLength({min:10}).withMessage("phoneNumber mustn't be at least 10 characters")
+        .isLength({max:15}).withMessage("phoneNumber mustn't be more than 15 characters"),
         
     email: body("email")
         .notEmpty().withMessage("email is rquired")
