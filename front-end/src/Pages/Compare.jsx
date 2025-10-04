@@ -60,7 +60,7 @@ export default function ComparePage() {
       radius: '262 km',
       shape: 'irregular (protoplanetary)',
       heat: 'cold (surface varies)',
-      type: 'Asteroid',
+      type: 'Asteroid (protoplanet)',
       galaxy: 'Milky Way',
       solarSystem: 'Asteroid Belt (Solar System)'
     },
@@ -117,9 +117,9 @@ export default function ComparePage() {
                   style={{ position: 'absolute', left: 12, top: 44, background: 'rgba(0,0,0,0.78)', color: '#fff', padding: '8px 12px', borderRadius: 8, zIndex: 80, maxWidth: 260 }}
                 >
                   <div style={{ fontSize: 12, opacity: 0.9, marginBottom: 6 }}>Explored: {leftMeta.exploredDate}</div>
+                  <div style={{ fontSize: 12, opacity: 0.9, marginBottom: 6 }}>Type: {leftMeta.type}</div>
                   <div style={{ fontSize: 12 }}>Radius: {leftMeta.radius}</div>
                   <div style={{ fontSize: 12 }}>Shape: {leftMeta.shape}</div>
-                  <div style={{ fontSize: 12 }}>Type: {leftMeta.type}</div>
                   <div style={{ fontSize: 12 }}>Heat: {leftMeta.heat}</div>
                   <div style={{ fontSize: 12 }}>Galaxy: {leftMeta.galaxy}</div>
                   <div style={{ fontSize: 12 }}>System: {leftMeta.solarSystem}</div>
@@ -165,9 +165,9 @@ export default function ComparePage() {
                   style={{ position: 'absolute', left: 12, top: 44, background: 'rgba(0,0,0,0.78)', color: '#fff', padding: '8px 12px', borderRadius: 8, zIndex: 80, maxWidth: 260 }}
                 >
                   <div style={{ fontSize: 12, opacity: 0.9, marginBottom: 6 }}>Explored: {rightMeta.exploredDate}</div>
+                  <div style={{ fontSize: 12, opacity: 0.9, marginBottom: 6 }}>Type: {rightMeta.type}</div>
                   <div style={{ fontSize: 12 }}>Radius: {rightMeta.radius}</div>
                   <div style={{ fontSize: 12 }}>Shape: {rightMeta.shape}</div>
-                  <div style={{ fontSize: 12 }}>Type: {rightMeta.type}</div>
                   <div style={{ fontSize: 12 }}>Heat: {rightMeta.heat}</div>
                   <div style={{ fontSize: 12 }}>Galaxy: {rightMeta.galaxy}</div>
                   <div style={{ fontSize: 12 }}>System: {rightMeta.solarSystem}</div>

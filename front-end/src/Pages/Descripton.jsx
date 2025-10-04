@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { OrbitControls, Stars } from "@react-three/drei"
 import * as THREE from "three"
 import FreeControls from "../components/FreeControls"
-import { FaGamepad, FaCamera, FaFacebook, FaTwitter, FaInstagram, FaInfoCircle, FaBalanceScale, FaHeart, FaRegHeart } from "react-icons/fa"
+import { FaGamepad, FaCamera, FaFacebook, FaTwitter, FaInstagram, FaInfoCircle, FaBalanceScale } from "react-icons/fa"
 import { FaSave } from "react-icons/fa"
 import "../css/Description.css"
 import Model from "../components/model"
@@ -229,24 +229,6 @@ function DescriptionCarousel() {
       alert('Instagram does not support direct web sharing. Save the image and upload manually.');
     }
   }
-  // favorites persisted in localStorage
-  const [favorites, setFavorites] = useState(() => {
-    try {
-      const raw = localStorage.getItem('favorites')
-      return raw ? JSON.parse(raw) : []
-    } catch (e) {
-      return []
-    }
-  })
-
-  function toggleFavorite(planetName) {
-    setFavorites(prev => {
-      const has = prev.includes(planetName)
-      const next = has ? prev.filter(p => p !== planetName) : [...prev, planetName]
-      try { localStorage.setItem('favorites', JSON.stringify(next)) } catch (e) {}
-      return next
-    })
-  }
   return (
     <div>
       {/* Fixed search bar for desktop only */}
@@ -279,23 +261,6 @@ function DescriptionCarousel() {
           >
             <FaCamera size={22} />
           </button>
-
-          {/* Favorite toggle: persists per planet (current slide) */}
-          {(() => {
-            const idx = getSlideFromQuery();
-            const currentPlanet = planets[idx] || planets[0];
-            const isFav = favorites.includes(currentPlanet);
-            return (
-              <button
-                className={`icon-btn`}
-                onClick={() => toggleFavorite(currentPlanet)}
-                title={isFav ? 'Remove from favorites' : 'Add to favorites'}
-                aria-pressed={isFav}
-              >
-                {isFav ? <FaHeart size={18} color="#ff6b6b" /> : <FaRegHeart size={18} />}
-              </button>
-            )
-          })()}
 
           {(() => {
             const idx = getSlideFromQuery();
