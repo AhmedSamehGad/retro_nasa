@@ -4,7 +4,8 @@ import { Canvas } from "@react-three/fiber"
 import { OrbitControls, Stars } from "@react-three/drei"
 import Model from "../components/model"
 import FreeControls from "../components/FreeControls"
-import { FaGamepad, FaInfoCircle } from "react-icons/fa"
+import { FaGamepad, FaInfoCircle, FaArrowLeft } from "react-icons/fa"
+import { motion, AnimatePresence } from 'framer-motion'
 
 function useQuery() {
   return new URLSearchParams(useLocation().search)
@@ -52,11 +53,80 @@ export default function ComparePage() {
   const left = planets[compare] || planets['Pluto']
   const right = planets[base] || planets['Vesta']
 
+  // metadata for quick info boxes
+  const planetDetails = useMemo(() => ({
+    Vesta: {
+      exploredDate: '1807-04-29',
+      radius: '262 km',
+      shape: 'irregular (protoplanetary)',
+      heat: 'cold (surface varies)',
+      type: 'Asteroid',
+      galaxy: 'Milky Way',
+      solarSystem: 'Asteroid Belt (Solar System)'
+    },
+    Pluto: {
+      exploredDate: '2015-07-14 (New Horizons)',
+      radius: '1188 km',
+      shape: 'nearly spherical (dwarf planet)',
+      heat: 'extremely cold (~-229°C)',
+      type: 'Dwarf Planet',
+      galaxy: 'Milky Way',
+      solarSystem: 'Kuiper Belt (Solar System)'
+    },
+    Earth: {
+      exploredDate: 'N/A (home planet)',
+      radius: '6,371 km',
+      shape: 'oblate spheroid',
+      heat: 'varies (avg ~14°C)',
+      type: 'Planet',
+      galaxy: 'Milky Way',
+      solarSystem: 'Solar System'
+    }
+  }), [])
+
+  const leftMeta = planetDetails[compare] || {}
+  const rightMeta = planetDetails[base] || {}
+
+  const [showInfoLeft, setShowInfoLeft] = useState(false)
+  const [showInfoRight, setShowInfoRight] = useState(false)
+
   return (
     <div style={{ padding: 16 }}>
       <div style={{ display: 'flex', gap: 12, height: '80vh' }}>
         <div style={{ flex: 1, borderRadius: 12, overflow: 'hidden', background: '#000', position: 'relative' }}>
-          <div style={{ padding: 8, color: '#fff', background: 'rgba(0,0,0,0.6)' }}>{compare}</div>
+          <div style={{ padding: 8, color: '#fff', background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', gap: 8, position: 'relative' }}>
+            <button
+              className="icon-btn"
+              onClick={() => navigate(`/description?planet=${encodeURIComponent(compare)}`)}
+              title={`Back to ${compare} description`}
+              style={{ background: 'transparent', border: 'none', color: '#fff', padding: 4, cursor: 'pointer' }}
+            >
+              <FaArrowLeft />
+            </button>
+            <button onClick={() => setShowInfoLeft(s => !s)} style={{ fontWeight: 600, background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer' }} aria-expanded={showInfoLeft}>
+              {compare}
+            </button>
+
+            <AnimatePresence>
+              {showInfoLeft && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.18 }}
+                  style={{ position: 'absolute', left: 12, top: 44, background: 'rgba(0,0,0,0.78)', color: '#fff', padding: '8px 12px', borderRadius: 8, zIndex: 80, maxWidth: 260 }}
+                >
+                  <div style={{ fontSize: 12, opacity: 0.9, marginBottom: 6 }}>Explored: {leftMeta.exploredDate}</div>
+                  <div style={{ fontSize: 12 }}>Radius: {leftMeta.radius}</div>
+                  <div style={{ fontSize: 12 }}>Shape: {leftMeta.shape}</div>
+                  <div style={{ fontSize: 12 }}>Type: {leftMeta.type}</div>
+                  <div style={{ fontSize: 12 }}>Heat: {leftMeta.heat}</div>
+                  <div style={{ fontSize: 12 }}>Galaxy: {leftMeta.galaxy}</div>
+                  <div style={{ fontSize: 12 }}>System: {leftMeta.solarSystem}</div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
           <button
             className="icon-btn"
             onClick={() => setFreeLeft(s => !s)}
@@ -80,7 +150,31 @@ export default function ComparePage() {
         </div>
 
         <div style={{ flex: 1, borderRadius: 12, overflow: 'hidden', background: '#000', position: 'relative' }}>
-          <div style={{ padding: 8, color: '#fff', background: 'rgba(0,0,0,0.6)' }}>{base}</div>
+          <div style={{ padding: 8, color: '#fff', background: 'rgba(0,0,0,0.6)', position: 'relative' }}>
+            <button onClick={() => setShowInfoRight(s => !s)} style={{ fontWeight: 600, background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer' }} aria-expanded={showInfoRight}>
+              {base}
+            </button>
+
+            <AnimatePresence>
+              {showInfoRight && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.18 }}
+                  style={{ position: 'absolute', left: 12, top: 44, background: 'rgba(0,0,0,0.78)', color: '#fff', padding: '8px 12px', borderRadius: 8, zIndex: 80, maxWidth: 260 }}
+                >
+                  <div style={{ fontSize: 12, opacity: 0.9, marginBottom: 6 }}>Explored: {rightMeta.exploredDate}</div>
+                  <div style={{ fontSize: 12 }}>Radius: {rightMeta.radius}</div>
+                  <div style={{ fontSize: 12 }}>Shape: {rightMeta.shape}</div>
+                  <div style={{ fontSize: 12 }}>Type: {rightMeta.type}</div>
+                  <div style={{ fontSize: 12 }}>Heat: {rightMeta.heat}</div>
+                  <div style={{ fontSize: 12 }}>Galaxy: {rightMeta.galaxy}</div>
+                  <div style={{ fontSize: 12 }}>System: {rightMeta.solarSystem}</div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
           <button
             className="icon-btn"
             onClick={() => setFreeRight(s => !s)}
