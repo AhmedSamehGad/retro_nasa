@@ -105,7 +105,7 @@ function Register() {
 
       {/* content */}
       <div className="relative z-10 text-white text-3xl flex justify-center items-center min-h-screen">
-        <div className="w-full max-w-[650px] bg-[#2B2828]/80 py-10 px-8 flex flex-col gap-4 items-center rounded-3xl shadow-2xl">
+        <div className=" scale-90 translate-y-10 w-full max-w-[650px] bg-[#2B2828]/80 py-4 px-8 flex flex-col gap-4 items-center rounded-3xl shadow-2xl">
           <h1>Hello ! Register here</h1>
 
           <form className="space-y-4 w-full " onSubmit={handleSubmit}>
@@ -185,7 +185,7 @@ function Register() {
               </div>
             </div>
 
-            <button className="bg-[#91B354] text-[18px] w-[90%] block m-auto p-[6px] rounded-lg">
+            <button className="bg-[#91B354] text-[18px] w-[90%] block m-auto p-[4px] rounded-lg">
               Sign Up
             </button>
           </form>
