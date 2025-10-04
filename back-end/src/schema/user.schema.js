@@ -1,0 +1,28 @@
+import mongoose from 'mongoose'
+
+const UserSchema =  mongoose.Schema({
+    // info
+    firstName:String,
+    lastName:String,
+
+    // security
+    email:{type:String, unique:true},
+    password:String,
+
+    tokens:{type:[String], default:[]},
+
+    // history
+    history: {type: [{action:String, createdAt:{type:Date, default:() => Date.now() }}], default:[]},
+
+    // check email
+    isVerified:{type:Boolean, default:false},
+    verifyCode:String,
+    verifyExpires: { type: Date, default: () => new Date(Date.now() + 10 * 60 * 1000) },
+
+}, {timestamps:true})
+
+UserSchema.index({verifyExpires:1}, {expireAfterSeconds:60})
+
+const Users = mongoose.model('Users', UserSchema)
+export default Users
+
