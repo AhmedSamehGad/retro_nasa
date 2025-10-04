@@ -120,19 +120,19 @@ function DescriptionCarousel() {
   const [animating, setAnimating] = useState(false)
   const location = useLocation();
   const carouselRef = useRef(null);
-  const canvasRefs = [useRef(null), useRef(null), useRef(null)];
+  const canvasRefs = [useRef(null), useRef(null)];
 
   // Map planet names to slide indices
   const planetToIndex = {
     Vesta: 0,
     Pluto: 1,
-    Earth: 2,
   };
 
   // Responsive model scales
   const vestaScale = useResponsiveScale(0.001, 0.0007, 0.0005);
   const plutoScale = useResponsiveScale(0.005, 0.0035, 0.0025);
-  const earthScale = useResponsiveScale(2, 1.3, 0.9);
+  // updated: earth scale set to 0.005 (match Pluto-like responsive sizing)
+  const earthScale = useResponsiveScale(0.005, 0.0035, 0.0025);
 
   // Parse ?slide= or ?planet= from query string
   function getSlideFromQuery() {
@@ -141,8 +141,8 @@ function DescriptionCarousel() {
     if (planet && planetToIndex.hasOwnProperty(planet)) {
       return planetToIndex[planet];
     }
-    const idx = parseInt(params.get("slide"), 10);
-    return isNaN(idx) ? 0 : Math.max(0, Math.min(2, idx));
+  const idx = parseInt(params.get("slide"), 10);
+  return isNaN(idx) ? 0 : Math.max(0, Math.min(1, idx));
   }
 
   // Touch swipe for mobile (run only after ref is set and in browser)
@@ -162,11 +162,11 @@ function DescriptionCarousel() {
         // Swipe left: next, right: prev
         const currentIdx = getSlideFromQuery();
         let nextIdx = currentIdx;
-        if (dx < 0) nextIdx = Math.min(2, currentIdx + 1);
+  if (dx < 0) nextIdx = Math.min(1, currentIdx + 1);
         else if (dx > 0) nextIdx = Math.max(0, currentIdx - 1);
         if (nextIdx !== currentIdx) {
-          window.location.search = `?slide=${nextIdx}`;
-        }
+        window.location.search = `?slide=${nextIdx}`;
+      }
       }
       startX = null;
     }
@@ -372,26 +372,7 @@ function DescriptionCarousel() {
             </div>
           </div>
 
-          {/* Earth */}
-          <div className="carousel-item" ref={canvasRefs[2]}>
-            <div className="canvas-wrapper">
-              {/* Inline search bar for mobile/tablet only */}
-              <form className="planet-search-bar planet-search-bar-inline" onSubmit={handleSearch} autoComplete="off">
-                <input
-                  type="text"
-                  placeholder="Search planet..."
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  aria-label="Search planet"
-                />
-              </form>
-              <Scene ambient={1} directional={1.2} freeControl={freeControl}>
-                <Model path="/models/earth.glb" scale={earthScale} />
-              </Scene>
-              <DescriptionBox text="Earth is the only known planet that supports life." />
-              <ImageBox src="/images/earth.jpg" caption="Earth Overview" />
-            </div>
-          </div>
+          {/* Earth removed per request */}
         </div>
 
         {/* Carousel Controls: always show, even on mobile */}

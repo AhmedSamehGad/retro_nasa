@@ -67,21 +67,34 @@ function DescriptionCarousel() {
   const navigate = useNavigate();
   const carouselRef = useRef(null);
   const [compareOpen, setCompareOpen] = useState(false);
-  const canvasRefs = [useRef(null), useRef(null), useRef(null)];
+    const canvasRefs = [useRef(null), useRef(null), useRef(null), useRef(null), useRef(null), useRef(null), useRef(null), useRef(null)];
+
+  // track the currently visible slide index (keeps label in sync with carousel)
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   // Map planet names to slide indices
   const planetToIndex = {
     Vesta: 0,
     Pluto: 1,
-    Earth: 2,
-  };
+    Mars: 2,
+    Ceres: 3,
+      Jupiter: 4,
+      Haumea: 5,
+      Eris: 6,
+      Neptune: 7,
+    };
 
-  const planets = ["Vesta", "Pluto", "Earth"];
+  const planets = ["Vesta", "Pluto", "Mars", "Ceres", "Jupiter", "Haumea", "Eris", "Neptune"];
 
   // Responsive model scales
   const vestaScale = useResponsiveScale(0.001, 0.0007, 0.0005);
   const plutoScale = useResponsiveScale(0.005, 0.0035, 0.0025);
-  const earthScale = useResponsiveScale(2, 1.3, 0.9);
+  const marsScale = useResponsiveScale(0.004, 0.0025, 0.0018);
+  const ceresScale = useResponsiveScale(0.005, 0.005, 0.003);
+    const jupiterScale = useResponsiveScale(0.007, 0.0044, 0.0029);
+    const haumeaScale = useResponsiveScale(0.0035, 0.0022, 0.0016);
+    const erisScale = useResponsiveScale(0.0045, 0.003, 0.0022);
+    const neptuneScale = useResponsiveScale(0.006, 0.0044, 0.003);
 
   // Parse ?slide= or ?planet= from query string
   function getSlideFromQuery() {
@@ -90,9 +103,36 @@ function DescriptionCarousel() {
     if (planet && planetToIndex.hasOwnProperty(planet)) {
       return planetToIndex[planet];
     }
-    const idx = parseInt(params.get("slide"), 10);
-    return isNaN(idx) ? 0 : Math.max(0, Math.min(2, idx));
+  const idx = parseInt(params.get("slide"), 10);
+  return isNaN(idx) ? 0 : Math.max(0, Math.min(7, idx));
   }
+
+  // keep currentIndex in sync with URL/initial load
+  useEffect(() => {
+    setCurrentIndex(getSlideFromQuery())
+    // also listen for bootstrap slide events to update the label when user navigates the carousel
+    const el = carouselRef.current
+    if (!el) return
+    const handler = () => {
+      const items = el.querySelectorAll('.carousel-item')
+      let idx = 0
+      items.forEach((it, i) => {
+        if (it.classList.contains('active')) idx = i
+      })
+      setCurrentIndex(idx)
+    }
+    // attach event if bootstrap present
+    if (window && window.bootstrap && el.addEventListener) {
+      el.addEventListener('slid.bs.carousel', handler)
+    }
+    // fallback: also observe DOM changes to detect class changes
+    const mo = new MutationObserver(handler)
+    mo.observe(el, { attributes: true, subtree: true, attributeFilter: ['class'] })
+    return () => {
+      if (window && window.bootstrap && el.removeEventListener) el.removeEventListener('slid.bs.carousel', handler)
+      mo.disconnect()
+    }
+  }, [carouselRef, location])
 
   // Touch swipe for mobile (run only after ref is set and in browser)
   useEffect(() => {
@@ -111,7 +151,7 @@ function DescriptionCarousel() {
         // Swipe left: next, right: prev
         const currentIdx = getSlideFromQuery();
         let nextIdx = currentIdx;
-        if (dx < 0) nextIdx = Math.min(2, currentIdx + 1);
+        if (dx < 0) nextIdx = Math.min(7, currentIdx + 1);
         else if (dx > 0) nextIdx = Math.max(0, currentIdx - 1);
         if (nextIdx !== currentIdx) {
           window.location.search = `?slide=${nextIdx}`;
@@ -153,9 +193,14 @@ function DescriptionCarousel() {
   function handleSearch(e) {
     e.preventDefault();
     const planet = search.trim().toLowerCase();
-    if (planet === "vesta") window.location.search = '?slide=0';
-    else if (planet === "pluto") window.location.search = '?slide=1';
-    else if (planet === "earth") window.location.search = '?slide=2';
+  if (planet === "vesta") window.location.search = '?slide=0';
+  else if (planet === "pluto") window.location.search = '?slide=1';
+  else if (planet === "mars") window.location.search = '?slide=2';
+  else if (planet === "ceres") window.location.search = '?slide=3';
+  else if (planet === "jupiter") window.location.search = '?slide=4';
+  else if (planet === "haumea") window.location.search = '?slide=5';
+  else if (planet === "eris") window.location.search = '?slide=6';
+  else if (planet === "neptune") window.location.search = '?slide=7';
     // else do nothing or show not found (not implemented)
   }
 
@@ -244,6 +289,9 @@ function DescriptionCarousel() {
 
       {/* Carousel */}
       <div id="carouselExample" className="carousel slide" data-bs-ride="false" ref={carouselRef}>
+        <div style={{ position: 'absolute', left: 12, top: 12, color: '#fff', fontWeight: 700, zIndex: 80, pointerEvents: 'none' }}>
+          {planets[currentIndex] || planets[0]}
+        </div>
         {/* Top-right corner icons container */}
         <div className="icons">
           <button
@@ -374,7 +422,7 @@ function DescriptionCarousel() {
             </div>
           </div>
 
-          {/* Earth */}
+          {/* Mars */}
           <div className="carousel-item" ref={canvasRefs[2]}>
             <div className="canvas-wrapper">
               {/* Inline search bar for mobile/tablet only */}
@@ -387,12 +435,110 @@ function DescriptionCarousel() {
                   aria-label="Search planet"
                 />
               </form>
-              <Scene ambient={1} directional={1.2} freeControl={freeControl}>
-                <Model path="/models/earth.glb" scale={earthScale} />
+              <Scene ambient={2} directional={0.9} freeControl={freeControl}>
+                <Model path="/models/mars.glb" scale={marsScale} />
               </Scene>
-              <ImageBox src="/images/earth.jpg" caption="Earth Overview" />
+              <ImageBox src="/images/mars.jpg" caption="Mars Overview" />
             </div>
           </div>
+
+          {/* Ceres */}
+          <div className="carousel-item" ref={canvasRefs[3]}>
+            <div className="canvas-wrapper">
+              {/* Inline search bar for mobile/tablet only */}
+              <form className="planet-search-bar planet-search-bar-inline" onSubmit={handleSearch} autoComplete="off">
+                <input
+                  type="text"
+                  placeholder="Search planet..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  aria-label="Search planet"
+                />
+              </form>
+              <Scene ambient={1.8} directional={0.7} freeControl={freeControl}>
+                <Model path="/models/ceres.glb" scale={ceresScale} />
+              </Scene>
+              <ImageBox src="/images/ceres.jpg" caption="Ceres Overview" />
+            </div>
+          </div>
+
+          {/* Jupiter */}
+          <div className="carousel-item" ref={canvasRefs[4]}>
+            <div className="canvas-wrapper">
+              <form className="planet-search-bar planet-search-bar-inline" onSubmit={handleSearch} autoComplete="off">
+                <input
+                  type="text"
+                  placeholder="Search planet..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  aria-label="Search planet"
+                />
+              </form>
+              <Scene ambient={0.4} directional={1.1} freeControl={freeControl}>
+                <Model path="/models/jupiter.glb" scale={jupiterScale} />
+              </Scene>
+              <ImageBox src="/images/jupiter.jpg" caption="Jupiter Overview" />
+            </div>
+          </div>
+
+          {/* Haumea */}
+          <div className="carousel-item" ref={canvasRefs[5]}>
+            <div className="canvas-wrapper">
+              <form className="planet-search-bar planet-search-bar-inline" onSubmit={handleSearch} autoComplete="off">
+                <input
+                  type="text"
+                  placeholder="Search planet..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  aria-label="Search planet"
+                />
+              </form>
+              <Scene ambient={1.6} directional={0.7} freeControl={freeControl}>
+                <Model path="/models/haumea.glb" scale={haumeaScale} />
+              </Scene>
+              <ImageBox src="/images/haumea.jpg" caption="Haumea Overview" />
+            </div>
+          </div>
+
+          {/* Eris */}
+          <div className="carousel-item" ref={canvasRefs[6]}>
+            <div className="canvas-wrapper">
+              <form className="planet-search-bar planet-search-bar-inline" onSubmit={handleSearch} autoComplete="off">
+                <input
+                  type="text"
+                  placeholder="Search planet..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  aria-label="Search planet"
+                />
+              </form>
+              <Scene ambient={1.9} directional={0.8} freeControl={freeControl}>
+                <Model path="/models/eris.glb" scale={erisScale} />
+              </Scene>
+              <ImageBox src="/images/eris.jpg" caption="Eris Overview" />
+            </div>
+          </div>
+
+          {/* Neptune */}
+          <div className="carousel-item" ref={canvasRefs[7]}>
+            <div className="canvas-wrapper">
+              <form className="planet-search-bar planet-search-bar-inline" onSubmit={handleSearch} autoComplete="off">
+                <input
+                  type="text"
+                  placeholder="Search planet..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  aria-label="Search planet"
+                />
+              </form>
+              <Scene ambient={0.5} directional={0.9} freeControl={freeControl}>
+                <Model path="/models/neptune.glb" scale={neptuneScale} />
+              </Scene>
+              <ImageBox src="/images/neptune.jpg" caption="Neptune Overview" />
+            </div>
+          </div>
+
+          
         </div>
 
         {/* Carousel Controls: always show, even on mobile */}
