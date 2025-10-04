@@ -7,6 +7,7 @@ import mongoose from 'mongoose'
 import authRouter from './routers/auth.routers.js'
 import historyRouter from './routers/history.routes.js'
 import searchStateRoutes from './routers/searchState.routes.js'
+import planetRoutes from './routers/planet.routes.js'
 
 
 const app = express()
@@ -55,6 +56,7 @@ app.get('/', (_,res) => {
 app.use('/api', authRouter)
 app.use('/api', historyRouter)
 app.use('/api', searchStateRoutes)
+app.use('/api', planetRoutes)
 
 
 
