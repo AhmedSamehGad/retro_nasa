@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { OrbitControls, Stars } from "@react-three/drei"
 import * as THREE from "three"
 import FreeControls from "../components/FreeControls"
-import { FaGamepad, FaCamera, FaFacebook, FaTwitter, FaInstagram, FaInfoCircle, FaBalanceScale } from "react-icons/fa"
+import { FaGamepad, FaCamera, FaFacebook, FaTwitter, FaInstagram, FaInfoCircle, FaBalanceScale, FaArrowLeft } from "react-icons/fa"
 import { FaSave } from "react-icons/fa"
 import "../css/Description.css"
 import Model from "../components/model"
@@ -289,8 +289,18 @@ function DescriptionCarousel() {
 
       {/* Carousel */}
       <div id="carouselExample" className="carousel slide" data-bs-ride="false" ref={carouselRef}>
-        <div style={{ position: 'absolute', left: 12, top: 12, color: '#fff', fontWeight: 700, zIndex: 80, pointerEvents: 'none' }}>
-          {planets[currentIndex] || planets[0]}
+        <div style={{ position: 'absolute', left: 12, top: 12, zIndex: 80, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button
+            className="icon-btn"
+            onClick={() => navigate('/game')}
+            title="Back to game"
+            style={{ background: 'transparent', border: 'none', color: '#fff', padding: 4, cursor: 'pointer' }}
+          >
+            <FaArrowLeft />
+          </button>
+          <div style={{ color: '#fff', fontWeight: 700, pointerEvents: 'none' }}>
+            {planets[currentIndex] || planets[0]}
+          </div>
         </div>
         {/* Top-right corner icons container */}
         <div className="icons">
@@ -311,8 +321,7 @@ function DescriptionCarousel() {
           </button>
 
           {(() => {
-            const idx = getSlideFromQuery();
-            const currentPlanet = planets[idx] || planets[0];
+            const currentPlanet = planets[currentIndex] || planets[0];
             return (
               <button
                 className={`icon-btn`}
@@ -335,8 +344,7 @@ function DescriptionCarousel() {
             </button>
 
             {compareOpen && (() => {
-              const idx = getSlideFromQuery();
-              const currentPlanet = planets[idx] || planets[0];
+              const currentPlanet = planets[currentIndex] || planets[0];
               const options = planets.filter(p => p !== currentPlanet);
               return (
                 <ul className="compare-dropdown" style={{
