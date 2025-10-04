@@ -455,6 +455,54 @@ export default function Game() {
       desc: "The dwarf planet. Cold and mysterious.",
     },
   ];
+
+  // Trending cards - fetched from local API. If the fetch fails or returns
+  // an empty list, we fall back to the hardcoded `planetList` above.
+  const [trendingCards, setTrendingCards] = useState([]);
+  const [trendingLoading, setTrendingLoading] = useState(false);
+  const [trendingError, setTrendingError] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    setTrendingLoading(true);
+    fetch("http://localhost:7170/api/trending")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (!mounted) return;
+        // Expecting response shape: { planets: [ { _id, name, searchCount } ] }
+        const list = data?.planets || data || [];
+        // Normalize items: prefer _id, name, and show searchCount as description
+        const normalized = Array.isArray(list)
+          ? list.map((p, i) => ({
+              id: p._id || p.id || `t-${i}`,
+              name: p.name || p.title || `Unknown ${i}`,
+              // If API provides searchCount, show it; otherwise fall back to desc fields
+              desc:
+                typeof p.searchCount !== "undefined"
+                  ? `${p.searchCount} searches`
+                  : p.desc || p.description || "",
+              emoji: p.emoji || p.icon || "",
+            }))
+          : [];
+        setTrendingCards(normalized);
+        setTrendingError(null);
+      })
+      .catch((err) => {
+        if (!mounted) return;
+        setTrendingError(err.message || String(err));
+        setTrendingCards([]);
+      })
+      .finally(() => {
+        if (!mounted) return;
+        setTrendingLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
   const wallsLayout = [
     { pos: [0, 1, -20], size: [40, 2, 1] },
     { pos: [0, 1, 20], size: [40, 2, 1] },
@@ -599,18 +647,25 @@ export default function Game() {
                   </select>
                 </div>
                 <div className="planet-cards">
-                  {planetList.map((planet, idx) => (
-                    <div
-                      key={planet.name}
-                      className={`planet-card${selectedPlanet === idx ? " selected" : ""}`}
-                      data-slide={idx}
-                      onClick={() => navigate(`/description?planet=${encodeURIComponent(planet.name)}`)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <h3>{planet.emoji} {planet.name}</h3>
-                      <p>{planet.desc}</p>
-                    </div>
-                  ))}
+                  {trendingLoading ? (
+                    <div style={{color:'#fff',padding:12}}>Loading trending...</div>
+                  ) : trendingError ? (
+                    <div style={{color:'#ffb3b3',padding:12}}>Trending failed: {trendingError}</div>
+                  ) : (
+                    // If API returned nothing, fall back to local planetList
+                    (trendingCards && trendingCards.length ? trendingCards : planetList).map((planet, idx) => (
+                      <div
+                        key={(planet.id || planet.name) + idx}
+                        className={`planet-card${selectedPlanet === idx ? " selected" : ""}`}
+                        data-slide={idx}
+                        onClick={() => navigate(`/description?planet=${encodeURIComponent(planet.name)}`)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <h3>{planet.emoji ? planet.emoji + ' ' : ''}{planet.name}</h3>
+                        <p>{planet.desc}</p>
+                      </div>
+                    ))
+                  )}
                 </div>
               </>
             )}
