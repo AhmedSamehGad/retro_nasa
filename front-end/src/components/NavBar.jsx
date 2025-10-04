@@ -11,7 +11,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Your Profile", path: "/profile" },
-    { name: "How It All Began", path: "/about" },
+    { name: "Start Exploration", path: "/game" },
   ]
 
   useEffect(() => {

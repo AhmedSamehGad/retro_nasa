@@ -8,7 +8,7 @@ import Description from "./Pages/Descripton";
 import Compare from "./Pages/Compare";
 import Details from "./Pages/Details";
 import NotFound from "./components/NotFoundPage";
-
+import ProfilePage from "./Pages/Profile";
 
 function App() {
   return (
@@ -18,6 +18,7 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
 
         <Route path="/game" element={<Game />} />
