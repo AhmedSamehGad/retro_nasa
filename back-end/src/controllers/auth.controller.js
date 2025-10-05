@@ -100,7 +100,7 @@ export const login = async (req,res) => {
             path:"/"
         })
 
-        return res.status(200).json({ message: "successful login"});
+        return res.status(200).json({ message: "successful login", user:user});
     }
     catch(error){
         console.log(error)

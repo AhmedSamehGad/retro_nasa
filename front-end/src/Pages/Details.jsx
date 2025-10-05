@@ -15,3 +15,4 @@ export default function Details() {
   }, [location, navigate])
   return null
 }
+

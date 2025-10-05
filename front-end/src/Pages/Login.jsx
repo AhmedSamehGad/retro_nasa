@@ -1,19 +1,32 @@
 // Register.jsx
 import { useState } from "react";
 import Input from "../components/Input";
+import {useNavigate} from 'react-router-dom'
 
 export default function Register() {
-  const [formData, setFormData] = useState({ email: "", password: "", });
 
+    const navigator = useNavigate()
+
+  const [formData, setFormData] = useState({ email: "", password: "", });
   const [errors, setErrors] = useState({ email: "", password: "", })
+
+  const [serverErrors, setServerErrors] = useState()
+
+
+  const [loading, setIsloading] = useState(false)
+  const [success, setIsSuccess] = useState(false)
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsloading(true)
+    setIsSuccess(false)
     console.log(formData); 
 
     let errors = {}
@@ -26,13 +39,42 @@ export default function Register() {
     
     else if(password.length < 8) errors.password = "password must be at least 8 letters"
 
-    if(errors || errors.length > 0){
+    if (Object.keys(errors).length > 0){
         console.log(errors)
+        setIsSuccess(false)
+        setIsloading(false)
         return setErrors(errors)
     }
 
-    
+    const login = async () => {
+        try{
+            const res = await fetch("http://localhost:7170/api/auth/login",{
+                method:"POST",
+                headers:{"content-type":"application/json"},
+                credentials:"include",
+                body:JSON.stringify({email, password})
+            })
 
+            if (!res.ok) {
+                const errorData = await res.json()
+                setServerErrors(errorData.message)
+                throw new Error(errorData.message || "Login failed")
+            }
+
+            const data = await res.json()
+            navigator('/profile')
+            return data
+
+        }
+        catch(error){
+            return {message:error.message}
+        }
+        
+    }
+    setIsSuccess(true)
+    setIsloading(false)
+    const loginFunc = await login()
+    console.log(loginFunc)
 
 
   };
@@ -60,6 +102,7 @@ export default function Register() {
               name="email" 
               value={formData.email} 
               onChange={handleChange} 
+              errors={errors}
             />
 
               <Input 
@@ -68,6 +111,7 @@ export default function Register() {
                 name="password" 
                 value={formData.password} 
                 onChange={handleChange} 
+                errors={errors}
               />
 
             <button className="bg-[#91B354] text-[18px] w-[90%] block mt-3 m-auto p-[4px] rounded-lg">
@@ -79,4 +123,3 @@ export default function Register() {
     </div>
   );
 }
-
