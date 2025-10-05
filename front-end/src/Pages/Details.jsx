@@ -128,3 +128,6 @@ const PlanetComponent = ({ onPlanetSelect }) => {
 };
 
 export default PlanetComponent;
+
+
+// x
