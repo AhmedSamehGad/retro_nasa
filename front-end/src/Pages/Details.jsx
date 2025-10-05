@@ -109,7 +109,7 @@ const ErisComponent = () => {
         <p>Orbit Shape: {eris.orbit?.orbit_shape}</p>
         <p>Surface: {eris.surface?.composition.join(", ")}</p>
         {eris.surface?.notable_features?.length > 0 && (
-          <p>Features: {eris.surface.notable_features.join(", ")}</p>
+            <p>Features: {eris.surface.notable_features.join(", ")}</p>
         )}
       </motion.div>
     </div>
