@@ -1,8 +1,10 @@
 // Register.jsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 
 function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -32,7 +34,7 @@ function Register() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData); 
 
@@ -77,17 +79,52 @@ function Register() {
     if(!confirmPassword) errors.confirmPassword = "confirm Password is required"
     else if(confirmPassword !== password) errors.confirmPassword = "confirm Password does not match with password"
 
-    if(!gender) errors.confirmPassword = "gender is required"
+    if (!gender) errors.gender = "gender is required";
     else if(gender != 'Male' && gender != 'Female') errors.gender = "check gender"
 
 
 
-    if(errors || errors.length > 0){
-        console.log(errors)
-        return setErrors(errors)
+    if (Object.keys(errors).length > 0) {
+  setErrors(errors);
+  return;
+}
+
+    const registerUser = async () => {
+  try {
+    const res = await fetch("http://localhost:7170/api/auth/register", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        age,
+        address,
+        phoneNumber,
+        email,
+        password,
+        confirmPassword,
+        gender
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setServerError(data.message || "Register failed");
+      throw new Error(data.message || "Register failed");
     }
 
-    
+    navigate("/profile", { state: data.user });
+    return data;
+
+  } catch (error) {
+    return { message: error.message };
+  }
+};
+
+await registerUser();
+
 
 
 
