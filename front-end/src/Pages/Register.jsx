@@ -176,7 +176,7 @@ function Register() {
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
-                  className="w-full bg-[#353232]/95 py-[10px] px-2 text-[16px] rounded-lg outline-none "
+                  className="w-full bg-[#353232]/95 py-[10px] px-3 text-[16px] rounded-lg outline-none "
                 >
                   <option value="">Select Gender...</option>
                   <option value="Male">Male</option>
