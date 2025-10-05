@@ -1,5 +1,6 @@
 // Input.jsx
-export default function Input({ type="text", placeholder, name, value, onChange }) {
+export default function Input({ type="text", placeholder, name, value, onChange, errors }) {
+  
   return (
     <div className="flex-grow">
       <input 
