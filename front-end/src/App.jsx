@@ -9,6 +9,7 @@ import Compare from "./Pages/Compare";
 import Details from "./Pages/Details";
 import NotFound from "./components/NotFoundPage";
 import ProfilePage from "./Pages/Profile";
+import History from "./Pages/History";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
         <Route path="/details" element={<Details />} />
 
         {/* not found page */}
+
+        <Route path="/user/history" element={<History />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

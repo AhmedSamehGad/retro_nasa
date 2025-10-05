@@ -1,8 +1,17 @@
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
+
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const userHistory = location.state.history
+  console.log(userHistory)
+
+
   return (
-    <div className="min-h-screen bg-[#10001D] font-sans text-white overflow-hidden">
+    <div className="min-h-screen bg-[#10001D] font-sans text-white ">
       {/* Top Background Section (Dark Purple Gradient) */}
       {/* This mimics the top section's gradient and shape without the nav items */}
       <div className="relative h-[250px] md:h-[300px] lg:h-[350px] bg-gradient-to-b from-[#25004A] to-[#10001D] w-full rounded-b-[40px] shadow-xl">
@@ -19,7 +28,7 @@ const UserProfile = () => {
           </div>
           {/* User Info */}
           <div className="flex flex-col items-center md:items-start mt-4 md:mt-0">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">User 1</h1>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{location?.state?.firstName ? location.state.firstName : user}</h1>
             <p className="text-lg md:text-xl text-purple-200 font-light italic mt-1">
               Hello! I am into discovering the universe
             </p>
@@ -38,12 +47,13 @@ const UserProfile = () => {
       {/* Content Sections (History & Favourites) */}
       <div className="relative z-0 grid grid-cols-1 md:grid-cols-2 gap-8 px-6 md:px-10 lg:px-16 pb-16 pt-24 -mt-16 md:-mt-20"> {/* Adjusted padding-top to bring cards up */}
         {/* History Card */}
-        <div className="bg-[#2A0054] rounded-xl p-8 shadow-2xl border border-[#4A007C] flex flex-col items-center justify-center min-h-[200px] transform hover:scale-105 transition-transform duration-300">
+        <div onClick={() => navigate('/user/history', { state: userHistory })}
+             className="cursor-pointer bg-[#2A0054] rounded-xl p-8 shadow-2xl border border-[#4A007C] flex flex-col items-center justify-center min-h-[200px] transform hover:scale-105 transition-transform duration-300">
           <h2 className="text-3xl font-semibold mb-4 text-center tracking-wide">History</h2>
           <p className="text-purple-200 text-center text-opacity-80 font-light">Your journey through the cosmos...</p>
         </div>
         {/* Favourites Card */}
-        <div className="bg-[#2A0054] rounded-xl p-8 shadow-2xl border border-[#4A007C] flex flex-col items-center justify-center min-h-[200px] transform hover:scale-105 transition-transform duration-300">
+        <div className="cursor-pointer bg-[#2A0054] rounded-xl p-8 shadow-2xl border border-[#4A007C] flex flex-col items-center justify-center min-h-[200px] transform hover:scale-105 transition-transform duration-300">
           <h2 className="text-3xl font-semibold mb-4 text-center tracking-wide">Favourites</h2>
           <p className="text-purple-200 text-center text-opacity-80 font-light">Stars, galaxies, and nebulae you love...</p>
         </div>

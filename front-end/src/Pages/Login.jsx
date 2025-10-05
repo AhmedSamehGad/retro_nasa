@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom'
 
 export default function Register() {
 
-    const navigator = useNavigate()
+    const navigate = useNavigate()
 
   const [formData, setFormData] = useState({ email: "", password: "", });
   const [errors, setErrors] = useState({ email: "", password: "", })
@@ -62,7 +62,7 @@ export default function Register() {
             }
 
             const data = await res.json()
-            navigator('/profile', {scale:data})
+            navigate('/profile', { state: data.user })
             return data
 
         }
