@@ -19,7 +19,6 @@ const ErisComponent = () => {
       setError(err.message);
       return [];
     }
-<<<<<<< HEAD
   };
 
   useEffect(() => {
@@ -118,9 +117,3 @@ const ErisComponent = () => {
 };
 
 export default ErisComponent;
-=======
-  }, [location, navigate])
-  return null
-}
-
->>>>>>> loginFE
