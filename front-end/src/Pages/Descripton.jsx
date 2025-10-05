@@ -11,6 +11,8 @@ import Model from "../components/model"
 
 // FreeControls is provided by shared component
 
+
+
 // Scene component with toggle controls
 function Scene({ children, ambient = 2, directional = 1, freeControl }) {
   const [objects, setObjects] = useState([])
