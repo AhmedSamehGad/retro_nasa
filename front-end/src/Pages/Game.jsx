@@ -5,8 +5,9 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { PointerLockControls, Stars, Html } from "@react-three/drei"
 import * as THREE from "three"
 import "../css/Game.css"
-import "../css/Screen.css"
+import "../css/screen.css"
 import Model from "../components/model"
+
 
 function PlayerController({
   enabled = true,
