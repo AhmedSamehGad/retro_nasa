@@ -61,9 +61,9 @@ app.use('/api', planetRoutes)
 
 
 const POST = process.env.PORT
-app.listen(POST, console.log("Server is running"))
+// app.listen(POST, console.log("Server is running"))
 
 
 // when deploy on vercel ✌️
-// export default app
+export default app
 
